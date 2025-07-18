@@ -5,25 +5,25 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Jenkins credentials ID
         DOCKERHUB_REPO = 'karnativ/my-flask-app'
         //SONARQUBE_SERVER = 'SonarQubeServer' // Jenkins SonarQube server name
-        NEXUS_URL = 'http://nexus.example.com/repository/your-repo/'
-        NEXUS_CREDENTIALS = credentials('nexus-credentials') // Jenkins credentials ID
-        IMAGE_TAG = "${env.BUILD_NUMBER}"
+      //  NEXUS_URL = 'http://nexus.example.com/repository/your-repo/'
+      //  NEXUS_CREDENTIALS = credentials('nexus-credentials') // Jenkins credentials ID
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
         stage('Checkout Source') {
             steps {
-                git 'https://github.com/karnativishnu/pythonproject.git'
+                git url: 'https://github.com/karnativishnu/devops1.git'
             }
         }
 
-       // stage('SonarQube Code Analysis') {
-        //    steps {
-        //        withSonarQubeEnv("${SONARQUBE_SERVER}") {
-        //            sh 'sonar-scanner -Dsonar.projectKey=flask-app -Dsonar.sources=.'
-        //        }
-        //    }
-       // }
+        // stage('SonarQube Code Analysis') {
+        //     steps {
+        //         withSonarQubeEnv(env.SONARQUBE_SERVER) {
+        //             sh 'sonar-scanner -Dsonar.projectKey=flask-app -Dsonar.sources=.'
+        //         }
+        //     }
+        // }
 
         stage('Build Docker Image') {
             steps {
@@ -35,7 +35,6 @@ pipeline {
 
         stage('Image Scanning') {
             steps {
-                // Example with Trivy
                 sh "trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKERHUB_REPO}:${IMAGE_TAG}"
             }
         }
@@ -51,7 +50,6 @@ pipeline {
 
         // stage('Archive Artifacts to Nexus') {
         //     steps {
-        //         // Example: Archive a build artifact (e.g., .tar.gz of your app)
         //         sh "tar czf flask-app-${IMAGE_TAG}.tar.gz ."
         //         sh """
         //         curl -v -u ${NEXUS_CREDENTIALS_USR}:${NEXUS_CREDENTIALS_PSW} \
