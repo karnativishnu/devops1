@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Jenkins credentials ID
         DOCKERHUB_REPO = 'karnativ/my-flask-app'
-        //SONARQUBE_SERVER = 'SonarQubeServer' // Jenkins SonarQube server name
+        SONARQUBE_SERVER = 'SonarQubeServer' // Jenkins SonarQube server name
       //  NEXUS_URL = 'http://nexus.example.com/repository/your-repo/'
       //  NEXUS_CREDENTIALS = credentials('nexus-credentials') // Jenkins credentials ID
         IMAGE_TAG = "${BUILD_NUMBER}"
@@ -17,13 +17,13 @@ pipeline {
             }
         }
 
-        // stage('SonarQube Code Analysis') {
-        //     steps {
-        //         withSonarQubeEnv(env.SONARQUBE_SERVER) {
-        //             sh 'sonar-scanner -Dsonar.projectKey=flask-app -Dsonar.sources=.'
-        //         }
-        //     }
-        // }
+         stage('SonarQube Code Analysis') {
+             steps {
+                 withSonarQubeEnv(env.SONARQUBE_SERVER) {
+                     sh 'sonar-scanner -Dsonar.projectKey=flask-app -Dsonar.sources=.'
+                 }
+             }
+         }
 
         stage('Build Docker Image') {
             steps {
